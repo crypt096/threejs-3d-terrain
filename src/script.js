@@ -1,6 +1,6 @@
 import './style.css'
 import * as THREE from 'three'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+// import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import * as dat from 'dat.gui'
 
 // Debug
@@ -13,24 +13,39 @@ const canvas = document.querySelector('canvas.webgl')
 const scene = new THREE.Scene()
 
 // Objects
-const geometry = new THREE.TorusGeometry( .7, .2, 16, 100 );
+const geometry = new THREE.PlaneBufferGeometry(3, 3, 64, 64)
 
 // Materials
-
-const material = new THREE.MeshBasicMaterial()
-material.color = new THREE.Color(0xff0000)
+const material = new THREE.MeshStandardMaterial({
+    color: 'gray'
+})
 
 // Mesh
-const sphere = new THREE.Mesh(geometry,material)
-scene.add(sphere)
+const plane = new THREE.Mesh(geometry, material)
+scene.add(plane)
+
+plane.rotation.x = 181;
+gui.add(plane.rotation, 'x').min(0).max(600)
 
 // Lights
 
-const pointLight = new THREE.PointLight(0xffffff, 0.1)
-pointLight.position.x = 2
-pointLight.position.y = 3
-pointLight.position.z = 4
+const pointLight = new THREE.PointLight(0xffffff, 2)
+pointLight.position.x = 0
+pointLight.position.y = 0
+pointLight.position.z = 3
 scene.add(pointLight)
+
+gui.add(pointLight.position, 'x')
+gui.add(pointLight.position, 'y')
+gui.add(pointLight.position, 'z')
+
+const col = {
+    color: '#00ff00'
+}
+
+gui.addColor(col, 'color').onChange(() => {
+    pointLight.color.set(col.color)
+})
 
 /**
  * Sizes
@@ -40,8 +55,7 @@ const sizes = {
     height: window.innerHeight
 }
 
-window.addEventListener('resize', () =>
-{
+window.addEventListener('resize', () => {
     // Update sizes
     sizes.width = window.innerWidth
     sizes.height = window.innerHeight
@@ -84,13 +98,12 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
 const clock = new THREE.Clock()
 
-const tick = () =>
-{
+const tick = () => {
 
     const elapsedTime = clock.getElapsedTime()
 
     // Update objects
-    sphere.rotation.y = .5 * elapsedTime
+    // sphere.rotation.y = .5 * elapsedTime
 
     // Update Orbital Controls
     // controls.update()
